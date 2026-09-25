@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Рахунок → Viber</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; background: #f5f5f7; color: #111; margin: 0; }
+  .box { max-width: 480px; margin: 24px auto; padding: 0 16px; }
+  h3 { margin: 0 0 16px; }
+  a.btn { display: block; text-align: center; background: #7360f2; color: #fff; padding: 16px;
+          border-radius: 12px; font-size: 18px; text-decoration: none; margin-bottom: 12px; }
+  button { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #ccc; background: #fff; }
+  textarea { width: 100%; box-sizing: border-box; height: 130px; font-size: 15px; margin: 8px 0; }
+  p { color: #666; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h3 id="title">Рахунок у Viber</h3>
+  <a class="btn" id="open" href="#">Відкрити чат у Viber</a>
+  <p>Якщо текст не підставився — скопіюй і встав:</p>
+  <textarea id="txt" readonly></textarea>
+  <button id="copy">Скопіювати текст</button>
+</div>
+<script>
+  // Дані передаються після # — вони не йдуть на сервер GitHub, лише в браузер.
+  var p = new URLSearchParams(location.hash.slice(1));
+  var phone = (p.get('n') || '').replace(/\D/g, '');
+  var text = p.get('t') || '';
+  var t = encodeURIComponent(text);
+  var link = 'viber://chat?number=%2B' + phone + '&draft=' + t + '&text=' + t;
+  document.getElementById('title').textContent = phone ? 'Рахунок → +' + phone : 'Немає номера в посиланні';
+  document.getElementById('open').href = link;
+  document.getElementById('txt').value = text;
+  document.getElementById('copy').onclick = function () {
+    var ta = document.getElementById('txt');
+    ta.select();
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+      .catch(function () { document.execCommand('copy'); })
+      .then(function () { document.getElementById('copy').textContent = 'Скопійовано ✓'; });
+  };
+</script>
+</body>
+</html>
